@@ -45,6 +45,12 @@ npm run dev
 - Скачивание результата в PDF
 - Повторная генерация, индикатор загрузки и обработка ошибок
 
+## Rate limit (защита API)
+
+- **Production (Vercel):** подключите **Redis (Upstash)** в [Marketplace](https://vercel.com/marketplace?category=storage&search=redis) к проекту `storymaker-ai`. Vercel добавит `UPSTASH_REDIS_REST_URL` и `UPSTASH_REDIS_REST_TOKEN`.
+- **Middleware** считает запросы в Redis: **10 POST `/api/stories/generate` в минуту на IP** (скользящее окно).
+- **Локально** без Redis действует тот же лимит **10/мин** в памяти процесса (для dev достаточно).
+
 ## Важно
 
 Модель не должна выдумывать цены, скидки и другие факты. Указывайте всё существенное в поле «Дополнительная информация».

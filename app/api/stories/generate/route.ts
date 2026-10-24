@@ -2,44 +2,22 @@ import { NextResponse } from "next/server";
 import { GEMINI_ENV_HINT, getGeminiApiKey } from "@/lib/env";
 import { generateStories } from "@/lib/gemini";
 import { generateRequestSchema } from "@/lib/validate";
+import { getClientIpFromHeaders } from "@/lib/get-client-ip";
+import {
+  isMemoryRateLimited,
+  shouldUseMemoryRateLimit,
+} from "@/lib/memory-rate-limit";
+import { RATE_LIMIT_MESSAGE } from "@/lib/rate-limit-config";
 
 export const maxDuration = 60;
 
-const recentRequests = new Map<string, number[]>();
-const RATE_WINDOW_MS = 60_000;
-const RATE_MAX = 8;
-
-function getClientIp(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
-  return request.headers.get("x-real-ip") || "unknown";
-}
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const stamps = (recentRequests.get(ip) ?? []).filter(
-    (t) => now - t < RATE_WINDOW_MS,
-  );
-  if (stamps.length >= RATE_MAX) {
-    recentRequests.set(ip, stamps);
-    return true;
-  }
-  stamps.push(now);
-  recentRequests.set(ip, stamps);
-  return false;
-}
-
 export async function POST(request: Request) {
   try {
-    const ip = getClientIp(request);
-    if (isRateLimited(ip)) {
-      return NextResponse.json(
-        {
-          error:
-            "Слишком много запросов. Подождите минуту и попробуйте снова.",
-        },
-        { status: 429 },
-      );
+    if (shouldUseMemoryRateLimit()) {
+      const ip = getClientIpFromHeaders(request.headers);
+      if (isMemoryRateLimited(ip)) {
+        return NextResponse.json({ error: RATE_LIMIT_MESSAGE }, { status: 429 });
+      }
     }
 
     if (!getGeminiApiKey()) {

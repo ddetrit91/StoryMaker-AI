@@ -9,6 +9,7 @@ import type {
 import { CopyButton } from "./CopyButton";
 import { ExportPdfButton } from "./ExportPdfButton";
 import { formatStoryText, StoryCard } from "./StoryCard";
+import { Reveal } from "./Reveal";
 import { TemplatePicker } from "./TemplatePicker";
 
 interface StoryResultsProps {
@@ -30,7 +31,7 @@ export function StoryResults({
 }: StoryResultsProps) {
   if (!series && !loading) {
     return (
-      <div className="flex min-h-[240px] flex-col items-center justify-center rounded-[1.75rem] border border-dashed border-border bg-surface px-5 py-10 text-center sm:min-h-[320px] sm:px-6 sm:py-12">
+      <Reveal className="flex min-h-[240px] flex-col items-center justify-center rounded-[1.75rem] border border-dashed border-border bg-surface px-5 py-10 text-center sm:min-h-[320px] sm:px-6 sm:py-12" variant="scale">
         <p className="font-[family-name:var(--font-cormorant)] text-2xl text-text">
           Здесь появится серия из 3 Stories
         </p>
@@ -38,7 +39,7 @@ export function StoryResults({
           Заполните форму и нажмите «Сгенерировать сторис» — получите тексты,
           идеи визуала и рекомендации по оформлению.
         </p>
-      </div>
+      </Reveal>
     );
   }
 
@@ -71,15 +72,17 @@ export function StoryResults({
       {series ? (
         <>
           <div className="flex flex-col gap-4">
-            <div>
-              <h2 className="font-[family-name:var(--font-cormorant)] text-2xl text-text sm:text-3xl">
-                Ваша серия
-              </h2>
-              <p className="mt-1 text-sm text-muted">
-                Три готовые Stories для {nicheLabel.toLowerCase()}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
+            <Reveal delay={0}>
+              <div>
+                <h2 className="font-[family-name:var(--font-cormorant)] text-2xl text-text sm:text-3xl">
+                  Ваша серия
+                </h2>
+                <p className="mt-1 text-sm text-muted">
+                  Три готовые Stories для {nicheLabel.toLowerCase()}
+                </p>
+              </div>
+            </Reveal>
+            <Reveal className="flex flex-wrap gap-2" delay={90}>
               <CopyButton text={allText} label="Копировать все" />
               <ExportPdfButton
                 series={series}
@@ -109,22 +112,28 @@ export function StoryResults({
                 </svg>
                 Сгенерировать снова
               </button>
-            </div>
+            </Reveal>
           </div>
 
-          <TemplatePicker
-            value={templateId}
-            onChange={onTemplateChange}
-            disabled={loading}
-          />
+          <Reveal delay={140}>
+            <TemplatePicker
+              value={templateId}
+              onChange={onTemplateChange}
+              disabled={loading}
+            />
+          </Reveal>
 
-          <div className="grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+          <div
+            key={`deck-${series.stories.map((s) => s.title).join("|")}`}
+            className="story-card-deck grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3"
+          >
             {series.stories.map((story, index) => (
               <StoryCard
                 key={`${story.title}-${index}`}
                 story={story}
                 index={index}
                 templateId={templateId}
+                enterKey={`${series.stories[0]?.title ?? "s"}-${index}`}
               />
             ))}
           </div>

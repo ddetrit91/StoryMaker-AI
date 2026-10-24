@@ -15,7 +15,7 @@ export function GenerateButton({
     <button
       type="submit"
       disabled={loading || disabled}
-      className="group relative inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-accent px-6 py-3.5 text-base font-medium text-white transition enabled:hover:brightness-[0.97] enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+      className="group relative inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-accent px-6 py-3.5 text-base font-medium text-white shadow-[0_16px_36px_-20px_rgba(232,164,184,0.95)] transition duration-300 enabled:hover:-translate-y-0.5 enabled:hover:brightness-[0.98] enabled:hover:shadow-[0_22px_44px_-18px_rgba(232,164,184,1)] enabled:active:translate-y-0 enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
     >
       <span
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.28),transparent)] opacity-0 transition group-enabled:group-hover:opacity-100"

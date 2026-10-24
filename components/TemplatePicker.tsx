@@ -29,14 +29,14 @@ export function TemplatePicker({
               aria-pressed={selected}
               aria-label={tpl.label}
               title={tpl.description}
-              className={`group flex min-w-[92px] shrink-0 flex-col items-center gap-2 rounded-2xl border p-2 transition ${
+              className={`group flex min-w-[92px] shrink-0 flex-col items-center gap-2 rounded-2xl border p-2 transition duration-300 ease-out ${
                 selected
-                  ? "border-accent bg-accent-soft"
-                  : "border-border bg-surface hover:border-accent/50"
+                  ? "border-accent bg-accent-soft shadow-[0_12px_28px_-18px_rgba(232,164,184,0.85)]"
+                  : "border-border bg-surface hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md"
               } disabled:opacity-60`}
             >
               <span
-                className="block h-16 w-full rounded-xl border border-black/5"
+                className="block h-16 w-full rounded-xl border border-black/5 transition duration-300 group-hover:scale-[1.03]"
                 style={{ background: tpl.preview }}
                 aria-hidden
               />
